@@ -14,6 +14,8 @@ Press `N` to open it. Choose a region, a place, then a door, and confirm. Surviv
 
 ⚠️ Back up your saves first!
 
+⚠️ **Do not teleport while riding the train (Iron Road).** Players report that the train is deleted when you do. A fix is on the way; until then, get off the train before you teleport.
+
 
 
 ##### Teleporter may ask you to step outside
