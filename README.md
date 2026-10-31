@@ -6,7 +6,7 @@
 
 ## Pick any existing game destination from the menu and travel there instantly!
 
-*This is a utility mod, built mostly as a tool for mod development and testing, and shared in case it is useful to others. Using it for regular gameplay would be consider as a cheat which is why it's categorized as such.*
+*This is a utility mod, built mostly as a tool for mod development and testing, and shared in case it is useful to others. Using it for regular gameplay would be considered a cheat, which is why it's categorized as such.*
 
 Press `N` to open it. Choose a region, a place, then a door, and confirm. Survival mode only.
 
