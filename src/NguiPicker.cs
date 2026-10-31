@@ -169,7 +169,7 @@ internal static class NguiPicker
 
     private static string DefaultStatus()
     {
-        return Portal.DepartureIsInstanced() ? PickerCommon.InstancedWarning : "";
+        return Portal.DepartureRefusal() ?? "";
     }
 
     internal static bool Back()

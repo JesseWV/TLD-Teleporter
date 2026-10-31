@@ -164,8 +164,9 @@ internal static class Commands
         _armed = dest;
         uConsole.Log($"ARMED: {dest.Display} [{dest.Scene}], arriving at {dest.ExitPoint}.");
 
-        if (Portal.DepartureIsInstanced())
-            uConsole.Log($"  WARNING: you are inside an INSTANCE of '{GameManager.m_ActiveScene}'. Leaving one overrides the destination and returns you to the scene you entered from. Step outside first.");
+        string? departure = Portal.DepartureRefusal();
+        if (departure != null)
+            uConsole.Log($"  WARNING: {departure} teleporter_confirm will refuse until then.");
         if (dest.ArrivalCount > 1)
             uConsole.Log($"  Note: {dest.ArrivalCount} transitions arrive there, so the arrival marker may be ambiguous.");
         if (!dest.ReverseExists)

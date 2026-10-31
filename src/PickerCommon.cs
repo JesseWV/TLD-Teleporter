@@ -3,10 +3,12 @@ namespace Teleporter;
 internal static class PickerCommon
 {
     internal const string InstancedWarning =
-        "You are inside a shared interior. Travelling from here returns you to where you entered it, so step outside first.";
+        "You can't travel from inside this building. Step outside first.";
 
     private static bool _controlsLocked;
     private static PlayerControlMode _previousControlMode;
+
+    internal static PlayerControlMode? ModeBeforeOurLock => _controlsLocked ? _previousControlMode : null;
 
     internal static void LockControls()
     {
@@ -61,7 +63,8 @@ internal static class PickerCommon
 
     internal static string? RefusalFromHere(Destination dest)
     {
-        if (Portal.DepartureIsInstanced()) return InstancedWarning;
+        string? departure = Portal.DepartureRefusal();
+        if (departure != null) return departure;
 
         if (!IsOutdoor(dest) && AlreadyInside(dest))
             return $"You are already in {dest.PlaceDisplay}.";
@@ -153,7 +156,8 @@ internal static class PickerCommon
     {
 
         if (!GameManager.HasPlayerObject() || GameManager.IsMainMenuActive() || string.IsNullOrEmpty(GameManager.m_ActiveScene)) return;
-        if (Portal.DepartureIsInstanced()) return;
+        string? departure = Portal.DepartureRefusal();
+        if (departure != null) { Log.Warning($"[picker] refused {dest.Scene}/{dest.ExitPoint}: {departure}"); return; }
         string? refusal = DestinationCatalog.RejectionReason(dest);
         if (refusal != null)
         {

@@ -35,6 +35,7 @@ In the game's Mod Settings menu, under **Teleporter**:
 - **Arriving in the interior you are already standing in** is refused.
 - **Iron Road** places are offered only when the game reports the DLC owned and usable. This has been tested only with the DLC owned.
 - **Tales from the Far Territory** places are offered only when it is installed.
+- **The teleporter does not open while you are busy:** riding the train, sitting in a vehicle, on a rope, in a snow shelter, placing something, or doing anything else that is not ordinary standing or walking. A message says what to do first. (In 0.1.0, teleporting from the train deleted the train.)
 - The game is not paused while the teleporter is open. If an animal attacks or you die, it closes so the game can take over the screen.
 - Survival mode only. The Wintermute story regions are not covered.
 

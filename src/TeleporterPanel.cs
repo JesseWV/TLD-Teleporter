@@ -29,9 +29,6 @@ internal static class TeleporterPanel
     private static readonly Color TextColor = new(0.90f, 0.90f, 0.88f, 1f);
     private static readonly Color StatusColor = new(0.95f, 0.75f, 0.45f, 1f);
 
-    private const string InstancedWarning =
-        "You are inside a shared interior. Travelling from here returns you to where you entered it, so step outside first.";
-
     private static GameObject? _root;
     private static Transform? _regionContent;
     private static Transform? _placeContent;
@@ -44,6 +41,8 @@ internal static class TeleporterPanel
     private static string? _selectedPlace;
     private static bool _controlsLocked;
     private static PlayerControlMode _previousControlMode;
+
+    internal static PlayerControlMode? ModeBeforeOurLock => _controlsLocked ? _previousControlMode : null;
     private static int _closedByEscapeFrame = -1;
 
     internal static bool IsOpen => _root != null && _root.activeSelf;
@@ -79,7 +78,8 @@ internal static class TeleporterPanel
 
     private static string DefaultStatus()
     {
-        if (Portal.DepartureIsInstanced()) return InstancedWarning;
+        string? departure = Portal.DepartureRefusal();
+        if (departure != null) return departure;
         return PickerModel.Entries().Exists(e => e.Locked) ? "* " + PickerModel.LockedHint : "";
     }
 
@@ -142,7 +142,8 @@ internal static class TeleporterPanel
 
     private static void Choose(Destination dest)
     {
-        if (Portal.DepartureIsInstanced()) { _status!.text = InstancedWarning; return; }
+        string? departure = Portal.DepartureRefusal();
+        if (departure != null) { _status!.text = departure; return; }
         if (IsOutdoor(dest) ? dest.Scene == GameManager.m_ActiveScene : PickerCommon.AlreadyInside(dest))
         {
 
@@ -167,7 +168,7 @@ internal static class TeleporterPanel
     {
 
         if (!GameManager.HasPlayerObject() || GameManager.IsMainMenuActive() || string.IsNullOrEmpty(GameManager.m_ActiveScene)) return;
-        if (Portal.DepartureIsInstanced()) return;
+        if (Portal.DepartureRefusal() != null) return;
         string? refusal = DestinationCatalog.RejectionReason(dest);
         if (refusal != null)
         {

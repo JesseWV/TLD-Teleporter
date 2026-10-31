@@ -14,6 +14,10 @@ internal static class Picker
 
     internal static void Open()
     {
+
+        string? busy = Portal.ActivityRefusal();
+        if (busy != null) { HUDMessage.AddMessage(busy, false, false); Log.Msg("[picker] not opened: " + busy); return; }
+
         if (!_nguiFailed)
         {
             if (NguiPicker.TryOpen(out string? error)) return;

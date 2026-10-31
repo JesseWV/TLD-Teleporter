@@ -20,6 +20,8 @@ internal static class Portal
 
     internal static bool Spawn(Destination dest, out string message)
     {
+        string? departure = DepartureRefusal();
+        if (departure != null) { message = $"Cannot travel to {dest.Display}: {departure}"; return false; }
 
         if (SeamlessInteriorsCompat.Handles(dest)) return SeamlessEntry.Begin(dest, out message);
 
@@ -173,6 +175,38 @@ internal static class Portal
         }
         return null;
     }
+
+    internal static string? DepartureRefusal() => ActivityRefusal() ?? (DepartureIsInstanced() ? PickerCommon.InstancedWarning : null);
+
+    internal static string? ActivityRefusal()
+    {
+        try
+        {
+            if (Il2CppTLD.SteamTrain.SteamTrain.IsInsideSteamTrain) return "You are on the train. Get off the train before you travel.";
+            var pm = GameManager.GetPlayerManagerComponent();
+            if (pm == null) return null;
+            var mode = pm.GetControlMode();
+            if (mode == PlayerControlMode.Locked) mode = PickerCommon.ModeBeforeOurLock ?? TeleporterPanel.ModeBeforeOurLock ?? mode;
+            return mode switch
+            {
+                PlayerControlMode.Normal => null,
+                PlayerControlMode.InSteamTrain => "You are on the train. Get off the train before you travel.",
+                PlayerControlMode.InVehicle => "You are in a vehicle. Get out before you travel.",
+                PlayerControlMode.Climbing or PlayerControlMode.DeployRope or PlayerControlMode.TakeRope => "You are on a rope. Get off the rope before you travel.",
+                PlayerControlMode.PlaceMesh or PlayerControlMode.PlaceMeshPending or PlayerControlMode.PlaceDecal => "You are placing something. Finish or cancel before you travel.",
+                PlayerControlMode.BigCarry => "You are carrying something. Put it down before you travel.",
+                PlayerControlMode.InSnowShelter => "You are in a snow shelter. Leave it before you travel.",
+                _ => "Finish what you are doing before you travel.",
+            };
+        }
+        catch (System.Exception e)
+        {
+            if (!_departureCheckFailed) { _departureCheckFailed = true; Log.Error($"[portal] departure check failed, so travel is refused: {e}"); }
+            return "Travel is unavailable: the teleporter could not check what you are doing.";
+        }
+    }
+
+    private static bool _departureCheckFailed;
 
     internal static bool DepartureIsInstanced()
     {
